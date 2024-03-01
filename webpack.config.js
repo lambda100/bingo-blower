@@ -1,8 +1,10 @@
+const path = require('path');
 
 module.exports = {
+  mode: 'development',
   entry: ['babel-polyfill', './index.js'],
   output: {
-    path: __dirname,
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -12,27 +14,34 @@ module.exports = {
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
-        test: /.js?$/,
-        loader: 'babel-loader',
+        test: /\.js$/,
         exclude: /node_modules/,
-        query: {
-          presets: ['es2015'],
-          plugins: ['transform-object-rest-spread']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-object-rest-spread']
+          }
         }
       },
       {
         test: /\.(png|jpg)$/,
-        loader: 'url-loader?limit=8192'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8192
+          }
+        }
       },
       {
         test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   },
   externals: {
-    "createjs": "createjs"
+    'createjs': 'createjs'
   }
 }
